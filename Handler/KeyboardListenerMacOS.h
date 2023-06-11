@@ -51,11 +51,10 @@ private:
   void addMessagePortToRunLoop();
   static CFDataRef callbackMessagePort(CFMessagePortRef, SInt32, CFDataRef, void*);
 
-  static CLabelData getKeyLabel(const CVKCode, CKeyTextData&);
+  static CLabelData getKeyLabel(CKeyTextData&);
   static CKeyboardListenerMacImpl* getListener(void*);
   static CType getFlag(const CVKCode VKCode);
   static bool isDeadKey(CKeyTextData& keyTextData);
-  static QString getDeadKeyText(const CVKCode VKCode);
 
   CEventTapUPtr EventTap_;
   CMessagePortUPtr MessagePort_;

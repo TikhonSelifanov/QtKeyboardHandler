@@ -13,8 +13,8 @@ CKeyboardHandler::CKeyboardHandler() {
 void CKeyboardHandler::onKeyPressing(const CKeyPressing& KeyPressing) {
   qDebug() << "KeyID =" << KeyPressing.KeyID
            << "KeyPos =" << KeyPressing.KeyPosition
-           << "symb =" << KeyPressing.KeyText.Symbol[0]
-           << "lbl =" << KeyPressing.KeyLabel.LowSymbol
+           << "symb =" << QString(KeyPressing.KeyText.Symbol[0])
+           << "lbl =" << QString(KeyPressing.KeyLabel.LowSymbol)
            << "time =" << KeyPressing.PressingTime.toMilliSecondsF() << "ms";
 }
 

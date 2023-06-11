@@ -53,15 +53,6 @@ void CKeyboardListenerMacImpl::addEventTapToRunLoop() {
   CMacOSKeyboardAPI::addSourceRunLoopТoCurrentRunLoop(RunLoopSource.get());
 }
 
-QString CKeyboardListenerMacImpl::getDeadKeyText(const CVKCode VKCode) {
-  UniChar unicodeString[4];
-  UniCharCount unicodeStringLength;
-  CGEventRef event = CGEventCreateKeyboardEvent(NULL, VKCode, true);
-  CGEventKeyboardGetUnicodeString(event, 4, &unicodeStringLength, unicodeString);
-  CFRelease(event);
-  return QString::fromUtf16(unicodeString, unicodeStringLength);
-}
-
 bool CKeyboardListenerMacImpl::isDeadKey(CKeyTextData& keyTextData) {
   return keyTextData.Size == 3;
 }
@@ -102,7 +93,7 @@ CGEventRef CKeyboardListenerMacImpl::callbackEventTap(
 
   CVKCode VKCode = CMacOSKeyboardAPI::getVKCode(Event);
   CKeyTextData keyTextData = Listener->KeyTextMaker_.get(VKCode);
-  CLabelData labelData = getKeyLabel(VKCode, keyTextData);
+  CLabelData labelData = getKeyLabel(keyTextData);
   CKeyboardListenerMacImpl::CType flag;
   if (isDeadKey(keyTextData)) {
     flag = NSKernel::CKeyFlagsEnum::DeadKey;
@@ -173,14 +164,15 @@ CKeyboardListenerMacImpl::callbackMessagePort(CFMessagePortRef, SInt32, CFDataRe
 }
 
 // ########################## getKeyLabel
-CLabelData CKeyboardListenerMacImpl::getKeyLabel(const CVKCode VKCode, CKeyTextData& keyTextData) {
-  if (isDeadKey(keyTextData) && getDeadKeyText(VKCode).size() != 0)
+CLabelData CKeyboardListenerMacImpl::getKeyLabel(CKeyTextData& keyTextData) {
+  if (isDeadKey(keyTextData))
   {
-    return {getDeadKeyText(VKCode)[0], QChar(), 1};
+    keyTextData.Size = 0;
+    return {std::move(keyTextData.Symbol[0]), QChar(), 1};
   }
   if (keyTextData.Size > 0)
   {
-    return {keyTextData.Symbol[1], QChar(), 1};
+    return {keyTextData.Symbol[0], QChar(), 1};
   }
   return {QChar(), QChar(), 0};
 }

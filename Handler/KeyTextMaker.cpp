@@ -30,8 +30,8 @@ CKeyTextData CKeyTextMaker::get(const CVKCode VKCode) {
 }
 
 CKeyTextData CKeyTextMaker::getPrintableText(QString&& Text) const {
-  if (DeadKeyState_ != 0) {
-    return {{QChar(), QChar()}, 3};
+  if (DeadKeyState_ != 0 && !Text.isEmpty()) {
+    return {{Text.front(), QChar()}, 3};
   }
   if (Text.size() == 0 || CMacOSKeyboardAPI::getShifterState(::kVK_Command)) {
     return {{QChar(), QChar()}, 0};
